@@ -4,7 +4,6 @@ use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[clap(name = "norms")]
-#[clap(bin_name = "norms")]
 #[clap(version)]
 #[clap(about = "Does stuff and things.")]
 #[clap(propagate_version = true)]
