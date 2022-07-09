@@ -1,7 +1,11 @@
+mod apply;
+mod check;
 mod server;
 
 use clap::{Parser, Subcommand};
+use log::trace;
 
+#[derive(Debug)]
 #[derive(Parser)]
 #[clap(name = "norms")]
 #[clap(version)]
@@ -12,11 +16,21 @@ struct Cli {
     command: Commands,
 }
 
+#[derive(Debug)]
 #[derive(Subcommand)]
 enum Commands {
-    Server(server::Server)
+    Apply(apply::Apply),
+    Check(check::Check),
+    Server(server::Server),
 }
 
 pub fn run() {
-    Cli::parse();
+    let args = Cli::parse();
+    trace!("CLI args: {:#?}", args);
+
+    match args.command {
+        Commands::Apply(s) => s.run(),
+        Commands::Check(s) => s.run(),
+        Commands::Server(s) => s.run(),
+    }
 }
