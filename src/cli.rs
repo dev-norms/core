@@ -2,8 +2,10 @@ mod apply;
 mod check;
 mod server;
 
+use async_trait::async_trait;
 use clap::{Parser, Subcommand};
 use enum_dispatch::enum_dispatch;
+use futures::executor::block_on;
 use log::trace;
 
 #[derive(Debug)]
@@ -17,9 +19,10 @@ struct Cli {
     command: Command,
 }
 
+#[async_trait]
 #[enum_dispatch]
 trait RunnableCommand {
-    fn run(&self);
+    async fn run(&self);
 }
 
 #[derive(Debug)]
@@ -35,5 +38,5 @@ pub fn run() {
     let args = Cli::parse();
     trace!("CLI args: {:#?}", args);
 
-    Command::from(args.command).run();
+    block_on(Command::from(args.command).run());
 }

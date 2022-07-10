@@ -1,5 +1,8 @@
+use async_trait::async_trait;
 use clap::Args;
 use log::info;
+
+use crate::server;
 
 use super::RunnableCommand;
 
@@ -8,8 +11,11 @@ use super::RunnableCommand;
 #[clap(about = "Spins up a language server and stuff.")]
 pub struct Server {}
 
+#[async_trait]
 impl RunnableCommand for Server {
-    fn run(&self) {
+    async fn run(&self) {
         info!("Running server");
+
+        server::start();
     }
 }
