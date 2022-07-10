@@ -3,6 +3,7 @@ mod check;
 mod server;
 
 use clap::{Parser, Subcommand};
+use enum_dispatch::enum_dispatch;
 use log::trace;
 
 #[derive(Debug)]
@@ -13,12 +14,18 @@ use log::trace;
 #[clap(propagate_version = true)]
 struct Cli {
     #[clap(subcommand)]
-    command: Commands,
+    command: Command,
+}
+
+#[enum_dispatch]
+trait RunnableCommand {
+    fn run(&self);
 }
 
 #[derive(Debug)]
 #[derive(Subcommand)]
-enum Commands {
+#[enum_dispatch(RunnableCommand)]
+enum Command {
     Apply(apply::Apply),
     Check(check::Check),
     Server(server::Server),
@@ -28,9 +35,5 @@ pub fn run() {
     let args = Cli::parse();
     trace!("CLI args: {:#?}", args);
 
-    match args.command {
-        Commands::Apply(s) => s.run(),
-        Commands::Check(s) => s.run(),
-        Commands::Server(s) => s.run(),
-    }
+    Command::from(args.command).run();
 }
